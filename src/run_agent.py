@@ -140,9 +140,21 @@ def setup_agent():
     return agent
 
 def test(agent,pointcloud,pose,prev_vel):
+    '''
+    Function that returns the velocity of the UAV
 
+    Parameters:
+    - agent: RL policy object
+    - pointcloud - PCD data in the form of np.array (Shape is either (1080,) or (1080,1))
+    - pose - position of the UAV in the form of np.array (Shape is either (3,) or (3,1))
+    - prev_vel - velocity of the UAV at previous timestep (Shape - (3,))
+
+    '''
     if len(pointcloud.shape) == 2:
         pointcloud = pointcloud.reshape(-1)
+
+    if len(pose.shape) == 2:
+        pose = pose.reshape(-1)
 
     prp_state = np.concatenate((pose,pointcloud))
     prp_state = prp_state.reshape(1,-1)
