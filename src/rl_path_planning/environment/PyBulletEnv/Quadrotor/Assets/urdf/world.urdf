@@ -1,0 +1,175 @@
+<?xml version="1.0"?>
+<!-- This URDF was automatically created by SolidWorks to URDF Exporter! Originally created by Stephen Brawner (brawner@gmail.com) 
+     Commit Version: 1.6.0-4-g7f85cfe  Build Version: 1.6.7995.38578
+     For more information, please see http://wiki.ros.org/sw_urdf_exporter -->
+<robot name="simulator">
+
+  <link name="world"/>
+  <link name="base_world"/>
+
+  <joint name="base_joint" type="fixed">
+    <child link="world"/>
+    <parent link="base_world"/>
+    <origin xyz="0 0 0"/>
+  </joint>
+  
+  <joint name="virtual_joint" type="fixed">
+    <child link="pillar1"/>
+    <parent link="base_world"/>
+    <origin xyz="0.4 0.4 0"/>
+  </joint>
+
+  <link name="pillar1">
+    <inertial>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <mass
+        value="4.68848447603709" />
+      <inertia
+        ixx="0.430475145644522"
+        ixy="-1.79316182511057E-05"
+        ixz="-1.23322016653127E-06"
+        iyy="0.430587050486874"
+        iyz="4.52382428687083E-07"
+        izz="0.592651276900184" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <cylinder radius="0.05" length="23"/>
+      </geometry>
+      <material name="">
+        <color rgba="0.752941176470588 0.752941176470588 0.752941176470588 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <cylinder radius="0.05" length="23"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <link name="pillar2">
+    <inertial>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <mass
+        value="4.68848447603709" />
+      <inertia
+        ixx="0.430475145644522"
+        ixy="-1.79316182511057E-05"
+        ixz="-1.23322016653127E-06"
+        iyy="0.430587050486874"
+        iyz="4.52382428687083E-07"
+        izz="0.592651276900184" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <cylinder radius="0.05" length="23"/>
+      </geometry>
+      <material name="">
+        <color rgba="0.752941176470588 0.752941176470588 0.752941176470588 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <cylinder radius="0.05" length="23"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <!-- <link name="pillar3">
+    <inertial>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <mass
+        value="4.68848447603709" />
+      <inertia
+        ixx="0.430475145644522"
+        ixy="-1.79316182511057E-05"
+        ixz="-1.23322016653127E-06"
+        iyy="0.430587050486874"
+        iyz="4.52382428687083E-07"
+        izz="0.592651276900184" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <cylinder radius="0.05" length="23"/>
+      </geometry>
+      <material name="">
+        <color rgba="0.752941176470588 0.752941176470588 0.752941176470588 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <cylinder radius="0.05" length="23"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <link name="pillar4">
+    <inertial>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <mass
+        value="4.68848447603709" />
+      <inertia
+        ixx="0.430475145644522"
+        ixy="-1.79316182511057E-05"
+        ixz="-1.23322016653127E-06"
+        iyy="0.430587050486874"
+        iyz="4.52382428687083E-07"
+        izz="0.592651276900184" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <cylinder radius="0.05" length="23"/>
+      </geometry>
+      <material name="">
+        <color rgba="0.752941176470588 0.752941176470588 0.752941176470588 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <cylinder radius="0.05" length="23"/>
+      </geometry>
+    </collision>
+  </link> -->
+<!-- 
+  <joint name="virtual_joint4" type="fixed">
+    <child link="pillar4"/>
+    <parent link="base_world"/>
+    <origin xyz="0.4 0.4 0"/>
+  </joint> -->
+
+  <joint name="virtual_joint2" type="fixed">
+    <child link="pillar2"/>
+    <parent link="base_world"/>
+    <origin xyz="-0.4 -0.4 0"/>
+  </joint>
+
+  <!-- <joint name="virtual_joint3" type="fixed">
+    <child link="pillar3"/>
+    <parent link="base_world"/>
+    <origin xyz="-0.4 -0.4 0"/>
+  </joint> -->
+</robot>
