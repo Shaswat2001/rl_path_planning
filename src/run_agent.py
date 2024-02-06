@@ -5,11 +5,11 @@ import pickle
 import argparse
 import sys
 import numpy as np
-import rospy
 import time
-import matplotlib.pyplot as plt
+import rospy
+from laser_assembler.srv import AssembleScans
+from gazebo_msgs.srv import GetLinkState
 from geometry_msgs.msg import Twist
-# sys.path.insert(0, '/Users/shaswatgarg/Documents/WaterlooMASc/StateSpaceUAV')
 
 from rl_path_planning.agent import DDPG,TD3,SAC,SoftQ,RCRL,SEditor,USL,SAAC,IDEA1,IDEA2,IDEA3,IDEA4
 from rl_path_planning.pytorch_model import GaussianPolicyNetwork, PolicyNetwork,QNetwork,VNetwork,PhasicPolicyNetwork,PhasicQNetwork,ConstraintNetwork,MultiplierNetwork,SafePolicyNetwork,RealNVP,FeatureExtractor
@@ -19,7 +19,6 @@ from rl_path_planning.replay_buffer.Auxiliary_RB import AuxReplayBuffer
 from rl_path_planning.replay_buffer.Constraint_RB import ConstReplayBuffer,CostReplayBuffer
 
 from rl_path_planning.exploration.OUActionNoise import OUActionNoise
-# from rl_path_planning.controllers.PID import CascadeController
 
 from rl_path_planning.environment.GazeboEnv.Quadrotor.BaseGazeboUAVVelObsEnv1 import BaseGazeboUAVVelObsEnv1
 from rl_path_planning.environment.GazeboEnv.Quadrotor.BaseGazeboUAVVelObsEnv1PCD import BaseGazeboUAVVelObsEnv1PCD
@@ -150,6 +149,7 @@ def test(agent,pointcloud,pose,prev_vel):
     - prev_vel - velocity of the UAV at previous timestep (Shape - (3,))
 
     '''
+
     if len(pointcloud.shape) == 2:
         pointcloud = pointcloud.reshape(-1)
 
@@ -162,15 +162,59 @@ def test(agent,pointcloud,pose,prev_vel):
     action = agent.choose_action(prp_state,"testing")
 
     prev_vel += action[0]
+    prev_vel = np.clip(prev_vel,np.array([-0.7,-0.7,-0.7]),np.array([0.7,0.7,0.7]))
 
     return prev_vel
+
+def get_pointcloud(subscriber,data):
+
+    resp = subscriber(rospy.Time(0,0), rospy.get_rostime())
+
+    if len(resp.cloud.points) == 0:
+        return data
+    
+    points = np.array([[point.x,point.y,point.z] for point in resp.cloud.points])
+
+    data[:points.shape[0],:] = points[:360,:]
+    data[points.shape[0]:,:] = data[0,:]
+
+    return data
+
+def get_pose(publisher):
+
+    response = publisher("bebop::base_link","ground_plane::link")
+    response = response.link_state
+
+    return np.array([response.pose.position.x,response.pose.position.y,response.pose.position.z])
+
 
 if __name__=="__main__":
 
     rospy.init_node('test_rl')
 
+    pointcloud_subscriber = rospy.ServiceProxy('assemble_scans', AssembleScans) 
+    uam_publisher = rospy.ServiceProxy('/gazebo/get_link_state', GetLinkState)
+    twist_pub = rospy.Publisher("/cmd_vel", Twist, queue_size=1)
+    pointcloud_data = np.zeros((360,3))
+    pose = np.array([0,0,1])
+    vel = np.array([0,0,0],dtype=np.float64)
+    goal = np.array([1,1,1])
     agent = setup_agent()
 
-    velocity = test(agent,np.zeros((1080,1)),np.zeros((3)),prev_vel=np.zeros((3)))
+    for i in range(100):
 
-    print(velocity)
+        pointcloud_data = get_pointcloud(pointcloud_subscriber,pointcloud_data)
+        print(pointcloud_data)
+        vel = test(agent,pointcloud_data.reshape(-1),goal - pose,prev_vel=vel)
+
+        velocity = Twist()
+        velocity.linear.x = vel[0]
+        velocity.linear.y = vel[1]
+        # velocity.linear.z = vel[2]
+        twist_pub.publish(velocity)
+
+        print(vel)
+
+        time.sleep(0.05)
+
+        pose = get_pose(uam_publisher)
